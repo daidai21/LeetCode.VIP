@@ -1,0 +1,4 @@
+requests
+pandas
+lxml
+bs4

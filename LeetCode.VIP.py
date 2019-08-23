@@ -15,15 +15,15 @@ Running this code get leetcode VIP information save to csv file and update every
 
 URL: http://206.81.6.248:12306/leetcode/
 """
-# TODO： not add CI test
-# TODO: Pool(processes=-1), code run so slow.
 
 
 from __future__ import print_function
 
 import time
 T1 = time.time()
+import os
 import sys
+import json
 import argparse
 import requests
 import pandas as pd
@@ -33,21 +33,16 @@ from multiprocessing import Pool
 from urllib.parse import urljoin
 
 
-if sys.version < "3":
-    pass
-else:
-    pass
-
-
 __author__="daidai"
 __date__ = "2019.8.18 12:00"
 
 
+VERSION = 2 if sys.version < "3" else 3
 INDEX_URL = "http://206.81.6.248:12306/leetcode/algorithm"
-PROXY = {
-    # "http": "http://127.0.0.1:1080",
-    # "https": "https://127.0.0.1:1080",
-}
+proxy_json_file = open("proxy.json", 'r')
+PROXY = json.load(proxy_json_file)
+proxy_json_file.close()
+PLATFORM = sys.platform
 
 
 def get_max_page_num_from_html(text_html):
@@ -152,39 +147,7 @@ def generate_company_page_url(company_name_arr):
     return company_problem_id_arr
 
 
-def command():
-    """
-    # spider
-    ./leetcode.VIP.py -u
-    ./leetcode.VIP.py -update
-
-    # problem
-    ./leetcode.VIP.py -p
-    ./leetcode.VIP.py -problem
-
-    # company
-    ./leetcode.VIP.py -c
-    ./leetcode.VIP.py -company
-
-    # proxy
-    ./leetcode.VIP.py -proxy xxx
-    """
-    parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument()
-
-    args = parser.parse_args()
-    # TODO: args
-
-
-    # TODO: open in browser
-    """
-    mac:    open url
-    linux:  x-www-browser url
-    win:    cmd /c start url
-    """
-
-
-if __name__ == "__main__":
+def update_data():
     problem_arr = generate_problem_page_url()
     problem_pd = pd.DataFrame(problem_arr, columns=["id", "title", "vip", "difficulty", "frequency"])
     problem_pd.to_csv("problem.csv", index=False)
@@ -196,17 +159,56 @@ if __name__ == "__main__":
     company_problem_id_pd.to_csv("company.csv", index=False)
 
 
-    # temp
+def command():
     """
-    with open("index.html", "r", encoding="utf-8") as f:
-        text_html = f.read()
-        soup = BeautifulSoup(text_html, "html.parser")
-        # print(soup.prettify())
-
-        for page_num in soup.find_all(name="a", attrs="page-link active"):
-            print(page_num.name, page_num["class"], page_num["href"], page_num.string)
-        print(soup.find_all(name="a", attrs="page-link active")[-1].string)
+    ./leetcode.VIP.py -U --update         # update
+    ./leetcode.VIP.py -P --problem        # problem
+    ./leetcode.VIP.py -C --company        # company
+    ./leetcode.VIP.py --proxy             # proxy
+    ./leetcode.VIP.py -O --open-browser   # open browser
+    ./leetcode.VIP.py show-id             # show problem information of id
+    ./leetcode.VIP.py show-company        # show problem information of company name
     """
+    description = "This is a simple shell tool about algorithms problem \
+                   information of LeetCode. \n \
+                   Github URL: https://github.com/daidai21/LeetCode.VIP"
+    parser = argparse.ArgumentParser(description=description)
+    parser.add_argument("-U", "--update", action="store_true", help=" run spider to download the newest data information.")
+    parser.add_argument("-P", "--problem", action="store_true", help="show problem information.")
+    parser.add_argument("-C", "--company", action="store_true", help="show company information.")
+    parser.add_argument("--proxy", action="store_true", help="usage proxy.")
+    parser.add_argument("-O", "--open-browser", action="store_true", help="open problem in browser.")
+    parser.add_argument("-Sid", "--show-id", type=int, action="store", help="show problem information of id.")
+    parser.add_argument("-Sc", "--show-company", type=str, action="store", help="show problem information of company name.")
+    args = parser.parse_args()
 
+    if args.update:  # FIXME
+        if not args.proxy:
+            global PROXY
+            PROXY = None
+        update_data()
+    elif args.problem:
+        problem_df = pd.read_csv("problem.csv")
+        print(problem_df)
+    elif args.company:
+        company_df = pd.read_csv("company,csv")
+        print(company_df)
+    elif args.open_browser:
+        # TODO: join url
+        url = ""
+        if PLATFORM == "linux":
+            os.system("x-www-browser " + url)
+        elif PLATFORM == "":
+            os.system("open " + url)
+        elif PLATFORM == "win32":
+            os.system("cmd /c start " + url)
+        else:
+            assert False, "Unrecognizable sys version."
+    else:
+        os.system("./LeetCode.VIP.py --help")
+
+
+if __name__ == "__main__":
+    command()
 
     print("Run Time: ", time.time() - T1)

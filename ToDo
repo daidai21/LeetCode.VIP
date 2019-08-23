@@ -1,2 +1,9 @@
-- [ ] README usage
-- [ ] command py function
+- [Doing] README usage
+- [Done] command py function
+- [ ] spider Pool(processes=-1), code run so slow
+- [ ] add CI test
+- [ ] command add search
+- [ ] command add open browser
+- [ ] install.bat and uninstall.bat
+- [ ] Top Hits
+- [ ] Topics

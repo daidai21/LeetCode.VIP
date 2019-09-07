@@ -2,7 +2,7 @@
 
 ### Introduction & Feature
 
-This is a simple shell tool about algorithms problem information of LeetCode. This tool support windows, linux and Mac OX.
+This is a simple shell tool about algorithms problem information of LeetCode. This tool support linux and Mac OX.
 
 `company.csv` file
 
@@ -19,7 +19,8 @@ This is a simple shell tool about algorithms problem information of LeetCode. Th
 
 ### Install & Uninstall
 
-install: `wget https://github.com/daidai21/LeetCode.VIP; sudo ./LeetCode.VIP/install.sh`
+install: `wget https://github.com/daidai21/LeetCode.VIP; sudo ./LeetCode.VIP/install.sh`(or `pip install LeetCode.VIP`)
+
 uninstall: `~/.LeetCode.VIP/uninstall.sh`
 
 ### Usage

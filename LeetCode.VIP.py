@@ -27,6 +27,9 @@ import json
 import argparse
 import requests
 import pandas as pd
+pd.set_option('display.max_columns', None)
+pd.set_option('display.max_rows', None)
+pd.set_option('max_colwidth',100)
 from lxml import etree
 from bs4 import BeautifulSoup
 from multiprocessing import Pool
@@ -159,6 +162,23 @@ def update_data():
     company_problem_id_pd.to_csv("company.csv", index=False)
 
 
+def print_search_infor(type=None, selection=None):
+    problem_df = pd.read_csv("problem.csv")
+    company_df = pd.read_csv("company.csv")
+    if type == "problem":
+        search_result = problem_df[problem_df["id"] == selection]
+        if search_result.shape[0] == 0:
+            print("search this problem id not found")
+        else:
+            print(search_result)
+    elif type == "company":
+        search_result = company_df[company_df["company"] == selection]
+        if search_result.shape[0] == 0:
+            print("search this company name not found")
+        else:
+            print(search_result.T)
+
+
 def command():
     """
     ./leetcode.VIP.py -U --update         # update
@@ -177,7 +197,7 @@ def command():
     parser.add_argument("-P", "--problem", action="store_true", help="show problem information.")
     parser.add_argument("-C", "--company", action="store_true", help="show company information.")
     parser.add_argument("--proxy", action="store_true", help="usage proxy.")
-    parser.add_argument("-O", "--open-browser", action="store_true", help="open problem in browser.")
+    parser.add_argument("-O", "--open-browser", type=int, action="store", help="open problem in browser.")
     parser.add_argument("-Sid", "--show-id", type=int, action="store", help="show problem information of id.")
     parser.add_argument("-Sc", "--show-company", type=str, action="store", help="show problem information of company name.")
     args = parser.parse_args()
@@ -194,8 +214,10 @@ def command():
         company_df = pd.read_csv("company,csv")
         print(company_df)
     elif args.open_browser:
-        # TODO: join url
-        url = ""
+        problem_id = args.__dict__["open_browser"]
+        problem_df = pd.read_csv("problem.csv")
+        problem_name = problem_df[problem_df["id"] == problem_id]["title"].values[0]
+        url = "https://leetcode.com/problems/" + '-'.join(problem_name.lower().split())
         if PLATFORM == "linux":
             os.system("x-www-browser " + url)
         elif PLATFORM == "":
@@ -204,6 +226,12 @@ def command():
             os.system("cmd /c start " + url)
         else:
             assert False, "Unrecognizable sys version."
+    elif args.show_id:
+        problem_id = args.__dict__["show_id"]
+        print_search_infor(type="problem", selection=problem_id)
+    elif args.show_company:
+        company_name = args.__dict__["show_company"]
+        print_search_infor(type="company", selection=company_name)
     else:
         os.system("./LeetCode.VIP.py --help")
 

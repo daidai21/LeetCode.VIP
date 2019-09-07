@@ -1,9 +1,9 @@
-- [Doing] README usage
+- [Done] README usage
 - [Done] command py function
 - [ ] spider Pool(processes=-1), code run so slow
-- [ ] add CI test
-- [ ] command add search
-- [ ] command add open browser
-- [ ] install.bat and uninstall.bat
-- [ ] Top Hits
-- [ ] Topics
+- [Doing] add CI test
+- [Done] command add search
+- [Done] command add open browser
+- [Cut-Off] install.bat and uninstall.bat
+- [Cut-Off] Top Hits
+- [Cut-Off] Topics

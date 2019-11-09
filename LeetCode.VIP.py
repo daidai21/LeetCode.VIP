@@ -233,7 +233,7 @@ def command():
         company_name = args.__dict__["show_company"]
         print_search_infor(type="company", selection=company_name)
     else:
-        os.system("./LeetCode.VIP.py --help")
+        os.system("python LeetCode.VIP.py --help")
 
 
 if __name__ == "__main__":

@@ -7,3 +7,11 @@
 - [Cut-Off] install.bat and uninstall.bat
 - [Cut-Off] Top Hits
 - [Cut-Off] Topics
+- [ToDo] add new feature:
+    - LeetCode official website information:
+        - Difficulty
+        - star:
+            - approval
+            - disapproval
+            - discuss
+
